@@ -17,6 +17,9 @@ export default function Home() {
 
       <main className={styles.main}>
         <Banner buttonText="View Stores nearby" onButtonHandler={HadleOnBanerButtonHandler}/>
+        <div className={styles.heroImage}>
+          <Image src="/static/Header-Image.png" width={700} height={400} alt='The Header image'/>
+        </div>
       </main>
 
       <footer className={styles.footer}>
