@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Banner from '../components/banner'
 import Card from '../components/UI/card'
+import CoffeeStore from '../utils/coffeeData.json'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
@@ -22,7 +23,9 @@ export default function Home() {
           <Image src="/static/Header-Image.png" width={700} height={400} alt='The Header image'/>
         </div>
         <div className={styles.cardLayout}>
-          <Card className={styles.card} title="OgeeCoffee" imageUrl="/static/mesh-gradient.png" href="/coffee-store/ogeeCoffee"/>
+          {CoffeeStore.map(coffeeData=>{
+            <Card className={styles.card} title={coffeeData.name} imageUrl={coffeeData.imgURL} href={`/coffee-store/${coffeeData.id}`}/>
+          })}
         </div>
       </main>
 
