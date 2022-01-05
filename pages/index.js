@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Banner from '../components/banner'
+import Card from '../components/UI/card'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
         <div className={styles.heroImage}>
           <Image src="/static/Header-Image.png" width={700} height={400} alt='The Header image'/>
         </div>
+        <Card title="OgeeCoffee" imageUrl="/static/mesh-gradient.png" href="/coffee-store/ogeeCoffee"/>
       </main>
 
       <footer className={styles.footer}>
