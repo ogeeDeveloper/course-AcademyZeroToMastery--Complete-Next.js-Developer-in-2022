@@ -24,7 +24,11 @@ export default function Home() {
         </div>
         <div className={styles.cardLayout}>
           {CoffeeStore.map(coffeeData=>{
-            <Card className={styles.card} title={coffeeData.name} imageUrl={coffeeData.imgURL} href={`/coffee-store/${coffeeData.id}`}/>
+            <Card 
+              className={styles.card} 
+              title={coffeeData.name} 
+              imageUrl={coffeeData.imgURL} 
+              href={`/coffee-store/${coffeeData.id}`}/>
           })}
         </div>
       </main>
