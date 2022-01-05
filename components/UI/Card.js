@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from '../../styles/Card.module.css'
@@ -5,7 +6,7 @@ const Card = ({title,imageUrl,href}) => {
     return (
         <Link href={href}>
             <a className={styles.cardLink}>
-            <div className={styles.cardContainer}>
+            <div className={classnames('glass',styles.cardContainer)}>
                 <div className={styles.cardTittleWrapper}>
                     <h2 className={styles.cardTitle}>{title}</h2>
                 </div>
