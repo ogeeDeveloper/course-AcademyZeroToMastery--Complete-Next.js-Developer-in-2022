@@ -2,10 +2,20 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Banner from '../components/banner'
 import Card from '../components/UI/card'
-import CoffeeStore from '../utils/coffeeData.json'
+import CoffeeStoreData from '../utils/coffeeData.json'
 import styles from '../styles/Home.module.css'
 
-export default function Home() {
+export async function getStaticProps(context){
+  // Call the data source, this is where we would use the fetch() to get data from the API
+  const data = CoffeeStoreData
+  return{
+    props: {
+      data
+    },
+  }
+}
+export default function Home({data}) {
+  console.log("props:", data)
   const HadleOnBanerButtonHandler = event=>{
     console.log('Button Clicked')
   }
@@ -22,15 +32,24 @@ export default function Home() {
         <div className={styles.heroImage}>
           <Image src="/static/Header-Image.png" width={700} height={400} alt='The Header image'/>
         </div>
-        <div className={styles.cardLayout}>
-          {CoffeeStore.map(coffeeData=>{
-            <Card 
-              className={styles.card} 
-              title={coffeeData.name} 
-              imageUrl={coffeeData.imgURL} 
-              href={`/coffee-store/${coffeeData.id}`}/>
-          })}
-        </div>
+
+        {/* Only renders when they are data in the database */}
+        {data && <div>
+          <h2 className={styles.heading2}>Jamaica Stores</h2>
+          <div className={styles.cardLayout}>
+            {data.map(coffeeData=>{
+              return (
+                <Card
+                key={coffeeData.id} 
+                className={styles.card} 
+                title={coffeeData.name}
+                imageUrl={coffeeData.imgURL} 
+                href={`/coffee-store/${coffeeData.id}`}/>
+              )
+            })}
+          </div>
+        </div>}
+        
       </main>
 
       <footer className={styles.footer}>
