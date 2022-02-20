@@ -1,24 +1,24 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import Banner from '../components/banner'
-import Card from '../components/UI/card'
-import CoffeeStoreData from '../utils/coffeeData.json'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import Banner from "../components/banner";
+import Card from "../components/UI/card";
+import CoffeeStoreData from "../utils/coffeeData.json";
+import styles from "../styles/Home.module.css";
 
-export async function getStaticProps(context){
+export async function getStaticProps(context) {
   // Call the data source, this is where we would use the fetch() to get data from the API
-  const data = CoffeeStoreData
-  return{
+  const data = CoffeeStoreData;
+  return {
     props: {
-      data
+      data,
     },
-  }
+  };
 }
-export default function Home({data}) {
-  console.log("props:", data)
-  const HadleOnBanerButtonHandler = event=>{
-    console.log('Button Clicked')
-  }
+export default function Home({ data }) {
+  console.log("props:", data);
+  const HadleOnBanerButtonHandler = (event) => {
+    console.log("Button Clicked");
+  };
   return (
     <div className={styles.container}>
       <Head>
@@ -28,33 +28,41 @@ export default function Home({data}) {
       </Head>
 
       <main className={styles.main}>
-        <Banner buttonText="View Stores nearby" onButtonHandler={HadleOnBanerButtonHandler}/>
+        <Banner
+          buttonText="View Stores nearby"
+          onButtonHandler={HadleOnBanerButtonHandler}
+        />
         <div className={styles.heroImage}>
-          <Image src="/static/Header-Image.png" width={700} height={400} alt='The Header image'/>
+          <Image
+            src="/static/Header-Image.png"
+            width={700}
+            height={400}
+            alt="The Header image"
+          />
         </div>
 
         {/* Only renders when they are data in the database */}
-        {data && <div>
-          <h2 className={styles.heading2}>Jamaica Stores</h2>
-          <div className={styles.cardLayout}>
-            {data.map(coffeeData=>{
-              return (
-                <Card
-                key={coffeeData.id} 
-                className={styles.card} 
-                title={coffeeData.name}
-                imageUrl={coffeeData.imgURL} 
-                href={`/coffee-store/${coffeeData.id}`}/>
-              )
-            })}
+        {data && (
+          <div>
+            <h2 className={styles.heading2}>Jamaica Stores</h2>
+            <div className={styles.cardLayout}>
+              {data.map((coffeeData) => {
+                return (
+                  <Card
+                    key={coffeeData.id}
+                    className={styles.card}
+                    title={coffeeData.name}
+                    imageUrl={coffeeData.imgURL}
+                    href={`/coffee-store/${coffeeData.id}`}
+                  />
+                );
+              })}
+            </div>
           </div>
-        </div>}
-        
+        )}
       </main>
 
-      <footer className={styles.footer}>
-        
-      </footer>
+      <footer className={styles.footer}></footer>
     </div>
-  )
+  );
 }
