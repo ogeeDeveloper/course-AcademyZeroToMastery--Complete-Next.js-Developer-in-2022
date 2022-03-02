@@ -2,18 +2,33 @@ import Head from "next/head";
 import Image from "next/image";
 import Banner from "../components/banner";
 import Card from "../components/UI/card";
-import CoffeeStoreData from "../utils/coffeeData.json";
+// import CoffeeStoreData from "../utils/coffeeData.json";
 import styles from "../styles/Home.module.css";
 
 export async function getStaticProps(context) {
+  const options = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      Authorization: "fsq3RKiHsFKg5+bhQxuTEMNdB7J2k3MrapAAXcJ8laAu/Mo=",
+    },
+  };
+
+  const response = await fetch(
+    "https://api.foursquare.com/v3/places/nearby?ll=33.644777557264554%2C-85.57511156595493&query=coffee%20shop&limit=6",
+    options
+  );
+
   // Call the data source, this is where we would use the fetch() to get data from the API
-  const data = CoffeeStoreData;
+  const data = await response.json();
+  console.log(data);
   return {
     props: {
-      data,
+      data: data.results,
     },
   };
 }
+
 export default function Home({ data }) {
   console.log("props:", data);
   const HadleOnBanerButtonHandler = (event) => {
@@ -44,15 +59,18 @@ export default function Home({ data }) {
         {/* Only renders when they are data in the database */}
         {data && (
           <div>
-            <h2 className={styles.heading2}>Jamaica Stores</h2>
+            <h2 className={styles.heading2}>Chicago Coffee Stores</h2>
             <div className={styles.cardLayout}>
               {data.map((coffeeData) => {
                 return (
                   <Card
-                    key={coffeeData.id}
+                    key={coffeeData.fsq_id}
                     className={styles.card}
                     title={coffeeData.name}
-                    imageUrl={coffeeData.imgURL}
+                    imageUrl={
+                      coffeeData.imgURL ||
+                      "https://images.unsplash.com/photo-1504627298434-2119d6928e93?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
+                    }
                     href={`/coffee-store/${coffeeData.id}`}
                   />
                 );
