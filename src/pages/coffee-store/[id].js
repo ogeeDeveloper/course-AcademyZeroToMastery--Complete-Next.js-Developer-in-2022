@@ -51,8 +51,7 @@ const CoffeeStore = ({ CoffeeStoredetails }) => {
     return <div>Loading...</div>;
   }
 
-  const { name, address, neighborhood, imgURL } = CoffeeStoredetails;
-
+  const { name, address, neighborhood, imageURL } = CoffeeStoredetails;
   const handlUpvoteBtn = () => {
     console.log("Button to handle upvoting");
   };
@@ -68,7 +67,7 @@ const CoffeeStore = ({ CoffeeStoredetails }) => {
         <div className={styles.col1}>
           <div className={styles.backToHomeLink}>
             <Link href="/">
-              <a>Back to Home</a>
+              <a>← Back to Home</a>
             </Link>
           </div>
           <div className={styles.storeNameWrapper}>
@@ -76,7 +75,7 @@ const CoffeeStore = ({ CoffeeStoredetails }) => {
           </div>
           <dic className={styles.storeImgWrapper}>
             <Image
-              src={imgURL || "https://images.unsplash.com/photo-1504627298434-2119d6928e93?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"}
+              src={imageURL || "https://images.unsplash.com/photo-1504627298434-2119d6928e93?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"}
               width={600}
               height={360}
               alt={name}
