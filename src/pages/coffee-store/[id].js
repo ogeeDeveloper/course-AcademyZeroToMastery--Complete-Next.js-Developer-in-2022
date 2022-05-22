@@ -1,18 +1,23 @@
 // Hook to read route from the browser URL
 import { useRouter } from "next/router";
+
 import Head from "next/head";
 import Link from "next/link";
-import CoffeeStoreData from "../../utils/coffeeData.json";
 import styles from "../../styles/coffee-store.module.css";
 import Image from "next/image";
 import cls from "classnames";
+import { FetchCoffeeStore } from "../../lib/coffee-stores";
 
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
+
+  // Retrieve the coffee stores
+  const coffeeStore = await FetchCoffeeStore()
   // const data = CoffeeStoreData
   return {
     props: {
-      CoffeeStoredetails: CoffeeStoreData.find((CoffeeStores) => {
+      // Find the coffee store based on the ID that was in the URL param
+      CoffeeStoredetails: coffeeStore.find((CoffeeStores) => {
         // Returns the first id it gets from thhe dynnamic id in the URL
         return CoffeeStores.id.toString() === params.id;
       }),
@@ -21,7 +26,9 @@ export async function getStaticProps(staticProps) {
 }
 
 export async function getStaticPaths() {
-  const paths = CoffeeStoreData.map((cofeeStore) => {
+  // Retrieve the coffee stores
+  const coffeeStore = await FetchCoffeeStore()
+  const paths = coffeeStore.map((cofeeStore) => {
     return {
       params: {
         id: cofeeStore.id.toString(),
@@ -44,7 +51,7 @@ const CoffeeStore = ({ CoffeeStoredetails }) => {
     return <div>Loading...</div>;
   }
 
-  const { name, Address, city, imgURL } = CoffeeStoredetails;
+  const { name, address, neighborhood, imgURL } = CoffeeStoredetails;
 
   const handlUpvoteBtn = () => {
     console.log("Button to handle upvoting");
@@ -55,6 +62,8 @@ const CoffeeStore = ({ CoffeeStoredetails }) => {
       <Head>
         <title>{name}</title>
       </Head>
+
+
       <div className={styles.container}>
         <div className={styles.col1}>
           <div className={styles.backToHomeLink}>
@@ -67,7 +76,7 @@ const CoffeeStore = ({ CoffeeStoredetails }) => {
           </div>
           <dic className={styles.storeImgWrapper}>
             <Image
-              src={imgURL}
+              src={imgURL || "https://images.unsplash.com/photo-1504627298434-2119d6928e93?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"}
               width={600}
               height={360}
               alt={name}
@@ -78,12 +87,14 @@ const CoffeeStore = ({ CoffeeStoredetails }) => {
         <div className={cls("glass", styles.col2)}>
           <div className={styles.iconWrapper}>
             <Image src="/icons/places.svg" width={24} height={24} alt="" />
-            <p className={styles.text}>{Address}</p>
+            <p className={styles.text}>{address}</p>
           </div>
-          <div className={styles.iconWrapper}>
+          {neighborhood &&
+            <div className={styles.iconWrapper}>
             <Image src="/icons/NearMe.svg" width={24} height={24} alt="" />
-            <p className={styles.text}>{city}</p>
+            <p className={styles.text}>{neighborhood}</p>
           </div>
+          }
           <div className={styles.iconWrapper}>
             <Image src="/icons/star.svg" width={24} height={24} alt="" />
             <p className={styles.text}>10</p>
