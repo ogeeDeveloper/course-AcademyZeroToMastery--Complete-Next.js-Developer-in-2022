@@ -5,6 +5,7 @@ import Card from "../components/UI/card";
 // import CoffeeStoreData from "../utils/coffeeData.json";
 import styles from "../styles/Home.module.css";
 import {FetchCoffeeStore} from '../lib/coffee-stores'
+import useTrackLocation from "../../hooks/use-track-location"
 
 export async function getStaticProps(context){
   const coffeeStores = await FetchCoffeeStore()
@@ -18,9 +19,15 @@ export async function getStaticProps(context){
 
 export default function Home({ coffeeStores }) {
   console.log("props:", coffeeStores);
+  const {handleTracLocation,latLong, locationErrorMsg} = useTrackLocation()
+
   const HadleOnBanerButtonHandler = (event) => {
     console.log("Button Clicked");
+    handleTracLocation()
+
+    console.log({latLong, locationErrorMsg})
   };
+
   return (
     <div className={styles.container}>
       <Head>

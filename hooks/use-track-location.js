@@ -9,8 +9,9 @@ const useTrackLocation = ()=>{
 
     // Success handler
     const success = (position)=>{
-        const latitude = position.coord.latitude
-        const longitude = position.coord.longitude
+        const coord = position.coords
+        const latitude = coord.latitude
+        const longitude = coord.longitude
 
         setLatLong(`${latitude},${longitude}`)
         setLocationErrorMsg("")
