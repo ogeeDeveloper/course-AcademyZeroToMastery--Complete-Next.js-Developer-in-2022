@@ -6,6 +6,7 @@ import Card from "../components/UI/card";
 import styles from "../styles/Home.module.css";
 import {FetchCoffeeStore} from '../lib/coffee-stores'
 import useTrackLocation from "../../hooks/use-track-location"
+import {useEffect} from "react"
 
 export async function getStaticProps(context){
   const coffeeStores = await FetchCoffeeStore()
@@ -21,8 +22,26 @@ export default function Home({ coffeeStores }) {
   console.log("props:", coffeeStores);
   const {handleTracLocation,latLong, locationErrorMsg,isFindingLocation} = useTrackLocation()
 
-  const HadleOnBanerButtonHandler = (event) => {
-    console.log("Button Clicked");
+  useEffect(async() => {
+    // fetch coffee store if their is a latlong provided
+    if(latLong){
+      try{
+        const FetchCoffeeStoresByLatLong =await FetchCoffeeStore(latLong,30)
+        console.log({FetchCoffeeStoresByLatLong})
+        // set coffee stores
+      }catch(error){
+        // set error
+        console.log({error})
+      }
+    }
+  
+    return () => {
+      second
+    }
+  }, [latLong])
+  
+
+  const HadleOnBanerButtonHandler = () => {
     handleTracLocation()
 
     console.log({latLong, locationErrorMsg})

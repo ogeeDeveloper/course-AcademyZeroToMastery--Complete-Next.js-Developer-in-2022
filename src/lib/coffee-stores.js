@@ -14,7 +14,7 @@ const getUrlForCoffeeStores = (latlong, query, limit)=>{
 const getListOfCoffeeStoreImages = async ()=> {
   const photos = await unsplashApi.search.getPhotos({
     query: 'coffee store',
-    perPage:10,
+    perPage:40,
   })
   const unspashResults = photos.response.results
   // console.log("Response: ", unspashResults)
