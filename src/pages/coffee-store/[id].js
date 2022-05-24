@@ -14,13 +14,15 @@ export async function getStaticProps(staticProps) {
   // Retrieve the coffee stores
   const coffeeStore = await FetchCoffeeStore()
   // const data = CoffeeStoreData
+  const findCoffeeStoreByID = coffeeStore.find((CoffeeStores) => {
+    // Returns the first id it gets from thhe dynnamic id in the URL
+    return CoffeeStores.id.toString() === params.id;
+  })
   return {
     props: {
       // Find the coffee store based on the ID that was in the URL param
-      CoffeeStoredetails: coffeeStore.find((CoffeeStores) => {
-        // Returns the first id it gets from thhe dynnamic id in the URL
-        return CoffeeStores.id.toString() === params.id;
-      }),
+      // Set of IDs to be pre-rendered
+      CoffeeStoredetails: findCoffeeStoreByID ? findCoffeeStoreByID : {},
     },
   };
 }
