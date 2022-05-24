@@ -6,7 +6,7 @@ import Card from "../components/UI/card";
 import styles from "../styles/Home.module.css";
 import {FetchCoffeeStore} from '../lib/coffee-stores'
 import useTrackLocation from "../../hooks/use-track-location"
-import {useEffect} from "react"
+import {useEffect, useState} from "react"
 
 export async function getStaticProps(context){
   const coffeeStores = await FetchCoffeeStore()
@@ -22,6 +22,10 @@ export default function Home({ coffeeStores }) {
   console.log("props:", coffeeStores);
   const {handleTracLocation,latLong, locationErrorMsg,isFindingLocation} = useTrackLocation()
 
+  // Store the fetch coffee store by latlong in a state
+  const [coffeeStoreByUser, setCoffeeStoresByUser] = useState("")
+  const [coffeeStoreError, setCoffeeStoreError] = useState(null)
+
   useEffect(async() => {
     // fetch coffee store if their is a latlong provided
     if(latLong){
@@ -29,14 +33,12 @@ export default function Home({ coffeeStores }) {
         const FetchCoffeeStoresByLatLong =await FetchCoffeeStore(latLong,30)
         console.log({FetchCoffeeStoresByLatLong})
         // set coffee stores
+        setCoffeeStoresByUser(FetchCoffeeStoresByLatLong)
       }catch(error){
         // set error
         console.log({error})
+        setCoffeeStoreError(error.message)
       }
-    }
-  
-    return () => {
-      second
     }
   }, [latLong])
   
@@ -62,6 +64,10 @@ export default function Home({ coffeeStores }) {
           onButtonHandler={HadleOnBanerButtonHandler}
         />
         {locationErrorMsg && <p>Something went wrong: {locationErrorMsg}</p>}
+
+        {/* Display eror to user if their was problem retrieving stores with latlong */}
+        {coffeeStoreError && <p>Something went wrong: {coffeeStoreError}</p>}
+
         <div className={styles.heroImage}>
           <Image
             src="/static/Header-Image.png"
@@ -70,6 +76,29 @@ export default function Home({ coffeeStores }) {
             alt="The Header image"
           />
         </div>
+
+        {/* Render coffee stores near user based on LatLong */}
+        {coffeeStoreByUser && (
+          <div>
+            <h2 className={styles.heading2}>Coffee stores near me</h2>
+            <div className={styles.cardLayout}>
+              {coffeeStoreByUser.map((coffeeData) => {
+                return (
+                  <Card
+                    key={coffeeData.fsq_id}
+                    className={styles.card}
+                    title={coffeeData.name}
+                    imageUrl={
+                      coffeeData.imageURL ||
+                      "https://images.unsplash.com/photo-1504627298434-2119d6928e93?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
+                    }
+                    href={`/coffee-store/${coffeeData.id}`}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Only renders when they are data in the database */}
         {coffeeStores && (
