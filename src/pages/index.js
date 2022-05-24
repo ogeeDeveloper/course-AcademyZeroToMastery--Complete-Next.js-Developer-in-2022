@@ -19,7 +19,7 @@ export async function getStaticProps(context){
 
 export default function Home({ coffeeStores }) {
   console.log("props:", coffeeStores);
-  const {handleTracLocation,latLong, locationErrorMsg} = useTrackLocation()
+  const {handleTracLocation,latLong, locationErrorMsg,isFindingLocation} = useTrackLocation()
 
   const HadleOnBanerButtonHandler = (event) => {
     console.log("Button Clicked");
@@ -38,9 +38,11 @@ export default function Home({ coffeeStores }) {
 
       <main className={styles.main}>
         <Banner
-          buttonText="View Stores nearby"
+        // Change status of button if user is using find location
+          buttonText={isFindingLocation ? "Loading..." : "View Stores nearby"}
           onButtonHandler={HadleOnBanerButtonHandler}
         />
+        {locationErrorMsg && <p>Something went wrong: {locationErrorMsg}</p>}
         <div className={styles.heroImage}>
           <Image
             src="/static/Header-Image.png"

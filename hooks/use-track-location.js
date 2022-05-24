@@ -6,6 +6,8 @@ const useTrackLocation = ()=>{
     // state to track if their is a error and show the error message
     const [locationErrorMsg,setLocationErrorMsg] = useState("")
     const [latLong, setLatLong] = useState("")
+    // State to show if a user is finding location or not
+    const [isFindingLocation, setIsFindingLocation] = useState(false)
 
     // Success handler
     const success = (position)=>{
@@ -14,19 +16,24 @@ const useTrackLocation = ()=>{
         const longitude = coord.longitude
 
         setLatLong(`${latitude},${longitude}`)
+        setIsFindingLocation(false)
         setLocationErrorMsg("")
     }
 
     // Error handler
     const error = ()=>{
+        setIsFindingLocation(false)
         setLocationErrorMsg("Unable to retrieve your location")
     }
 
     // Track handler location
     const handleTracLocation =()=>{
+        // Set findinglocation to true when button is clicked
+        setIsFindingLocation(true)
         if(!navigator.geolocation){
             // message to show to user if their is an issue with their browser
             setLocationErrorMsg("Geolocation had an issue, seems your browser is not supported")
+            setIsFindingLocation(false)
         }else{
             navigator.geolocation.getCurrentPosition(success, error)
         }
@@ -35,7 +42,8 @@ const useTrackLocation = ()=>{
     return {
         latLong,
         handleTracLocation,
-        locationErrorMsg
+        locationErrorMsg,
+        isFindingLocation
     }
 }
 
