@@ -6,7 +6,8 @@ import Card from "../components/UI/card";
 import styles from "../styles/Home.module.css";
 import {FetchCoffeeStore} from '../lib/coffee-stores'
 import useTrackLocation from "../../hooks/use-track-location"
-import {useEffect, useState} from "react"
+import {useEffect, useState, useContext} from "react"
+import {ACTION_TYPES, StoreContext} from "./_app"
 
 export async function getStaticProps(context){
   const coffeeStores = await FetchCoffeeStore()
@@ -18,28 +19,43 @@ export async function getStaticProps(context){
 }
 
 
-export default function Home({ coffeeStores }) {
-  console.log("props:", coffeeStores);
-  const {handleTracLocation,latLong, locationErrorMsg,isFindingLocation} = useTrackLocation()
+export default function Home(props) {
+  console.log({props})
+  const {handleTracLocation, locationErrorMsg,isFindingLocation} = useTrackLocation()
 
   // Store the fetch coffee store by latlong in a state
-  const [coffeeStoreByUser, setCoffeeStoresByUser] = useState("")
+  // const [coffeeStoreByUser, setCoffeeStoresByUser] = useState("")
+  
   const [coffeeStoreError, setCoffeeStoreError] = useState(null)
 
-  useEffect(async() => {
-    // fetch coffee store if their is a latlong provided
-    if(latLong){
-      try{
-        const FetchCoffeeStoresByLatLong =await FetchCoffeeStore(latLong,30)
-        console.log({FetchCoffeeStoresByLatLong})
-        // set coffee stores
-        setCoffeeStoresByUser(FetchCoffeeStoresByLatLong)
-      }catch(error){
-        // set error
-        console.log({error})
-        setCoffeeStoreError(error.message)
+  // declare the dispatch
+  const {dispatch, state} = useContext(StoreContext)
+
+  const {coffeeStores, latLong} = state
+
+  useEffect(() => {
+    const setCoffeeStoreByLocation = async()=>{
+      // fetch coffee store if their is a latlong provided
+      if(latLong){
+        try{
+          const FetchCoffeeStoresByLatLong = await FetchCoffeeStore(latLong,30)
+          console.log({FetchCoffeeStoresByLatLong})
+          // set coffee stores
+          // setCoffeeStoresByUser(FetchCoffeeStoresByLatLong)
+          dispatch({
+            type: ACTION_TYPES.SET_COFFEE_STORES,
+            payload: {
+              coffeeStores: FetchCoffeeStore,
+            }
+          })
+        }catch(error){
+          // set error
+          console.log({error})
+          setCoffeeStoreError(error.message)
+        }
       }
     }
+    setCoffeeStoreByLocation() 
   }, [latLong])
   
 
@@ -78,11 +94,11 @@ export default function Home({ coffeeStores }) {
         </div>
 
         {/* Render coffee stores near user based on LatLong */}
-        {coffeeStoreByUser && (
+        {coffeeStores && (
           <div>
             <h2 className={styles.heading2}>Coffee stores near me</h2>
             <div className={styles.cardLayout}>
-              {coffeeStoreByUser.map((coffeeData) => {
+              {coffeeStores.map((coffeeData) => {
                 return (
                   <Card
                     key={coffeeData.fsq_id}
@@ -101,11 +117,11 @@ export default function Home({ coffeeStores }) {
         )}
 
         {/* Only renders when they are data in the database */}
-        {coffeeStores && (
+        {props.coffeeStores && (
           <div>
             <h2 className={styles.heading2}>Chicago Coffee Stores</h2>
             <div className={styles.cardLayout}>
-              {coffeeStores.map((coffeeData) => {
+              {props.coffeeStores.map((coffeeData) => {
                 return (
                   <Card
                     key={coffeeData.fsq_id}

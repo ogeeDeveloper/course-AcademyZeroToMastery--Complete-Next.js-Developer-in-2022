@@ -1,14 +1,15 @@
-import { createContext } from 'react/cjs/react.production.min'
+import { createContext, useReducer } from 'react'
 import '../styles/globals.css'
 
 // Create Context for the Coffee store app
-const StoreContext =createContext();
+export const StoreContext = createContext();
 
 // Create action types to be used in reducer
-const ACTION_TYPES={
+export const ACTION_TYPES={
   SET_LAT_LONG: 'SET_LAT_LONG',
   SET_COFFEE_STORES: 'SET_COFFEEE_STORES'
 }
+
 // Create reducer
 const storeReducer = (state, action)=>{
   switch(action.type){
@@ -27,12 +28,13 @@ const storeReducer = (state, action)=>{
 const StoreProvider = (({children})=>{
   // the initial state for the application 
   const initialState = {
-    "latLong": "",
+    latLong: "",
     coffeeStores: []
   }
 
   // use the reducer using the useReducer
   const [state, dispatch] = useReducer(storeReducer, initialState)
+
   return (
     <StoreContext.Provider value={{state: dispatch}}>
       {children}

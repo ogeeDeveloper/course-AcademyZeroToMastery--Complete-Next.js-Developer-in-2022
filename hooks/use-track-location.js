@@ -1,13 +1,17 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
+import {ACTION_TYPES, StoreContext} from "../src/pages/_app"
 
 
 // function to retrieve latlong of user
 const useTrackLocation = ()=>{
     // state to track if their is a error and show the error message
     const [locationErrorMsg,setLocationErrorMsg] = useState("")
-    const [latLong, setLatLong] = useState("")
+    // const [latLong, setLatLong] = useState("")
     // State to show if a user is finding location or not
     const [isFindingLocation, setIsFindingLocation] = useState(false)
+
+    // declare the dispatch function to access all the data in Context
+    const {dispatch} = useContext(StoreContext)
 
     // Success handler
     const success = (position)=>{
@@ -15,7 +19,14 @@ const useTrackLocation = ()=>{
         const latitude = coord.latitude
         const longitude = coord.longitude
 
-        setLatLong(`${latitude},${longitude}`)
+        //setLatLong(`${latitude},${longitude}`)
+        // call dispatch from context
+        dispatch({
+            // Set values from the LatLong type
+            type: ACTION_TYPES.SET_LAT_LONG,
+            // set the latLong using the payload
+            payload: {latLong: `${latitude},${longitude}`},
+        })
         setIsFindingLocation(false)
         setLocationErrorMsg("")
     }
@@ -30,6 +41,7 @@ const useTrackLocation = ()=>{
     const handleTracLocation =()=>{
         // Set findinglocation to true when button is clicked
         setIsFindingLocation(true)
+        
         if(!navigator.geolocation){
             // message to show to user if their is an issue with their browser
             setLocationErrorMsg("Geolocation had an issue, seems your browser is not supported")
@@ -40,7 +52,7 @@ const useTrackLocation = ()=>{
     }
 
     return {
-        latLong,
+        //latLong,
         handleTracLocation,
         locationErrorMsg,
         isFindingLocation
