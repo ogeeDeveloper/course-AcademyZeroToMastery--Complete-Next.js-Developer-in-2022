@@ -45,7 +45,7 @@ export default function Home(props) {
           dispatch({
             type: ACTION_TYPES.SET_COFFEE_STORES,
             payload: {
-              coffeeStores: FetchCoffeeStore,
+              coffeeStores: FetchCoffeeStoresByLatLong,
             }
           })
         }catch(error){
@@ -98,7 +98,7 @@ export default function Home(props) {
           <div>
             <h2 className={styles.heading2}>Coffee stores near me</h2>
             <div className={styles.cardLayout}>
-              {coffeeStores.map((coffeeData) => {
+              {coffeeStores?.map((coffeeData) => {
                 return (
                   <Card
                     key={coffeeData.fsq_id}
