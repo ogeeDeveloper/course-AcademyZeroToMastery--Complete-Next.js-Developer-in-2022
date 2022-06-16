@@ -1,3 +1,4 @@
+import { useContext, useEffect, useState } from "react";
 // Hook to read route from the browser URL
 import { useRouter } from "next/router";
 
@@ -7,6 +8,8 @@ import styles from "../../styles/coffee-store.module.css";
 import Image from "next/image";
 import cls from "classnames";
 import { FetchCoffeeStore } from "../../lib/coffee-stores";
+import { StoreContext } from "../_app";
+import { isEmpty } from "../../utils";
 
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
@@ -43,17 +46,44 @@ export async function getStaticPaths() {
   };
 }
 
-const CoffeeStore = ({ CoffeeStoredetails }) => {
+// Its a great convention to call anythings that is get called from getStaticProps as "initialProps"
+const CoffeeStore = (initialProps) => {
   const router = useRouter(); // This is a object that has a lot of values such as the 'id' from query
-  const { id } = router.query;
+  // const { id } = router.query;
 
-  console.log("store:", CoffeeStoredetails);
 
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
 
-  const { name, address, neighborhood, imageURL } = CoffeeStoredetails;
+  console.log("Coffee store from initial props:", initialProps.CoffeeStoredetails);
+
+  const [newCoffeeStore, setNewCoffeeStore] = useState(initialProps.CoffeeStoredetails)
+
+  // Get the ID from the URL
+  const id = router.query.id
+
+  // Fetch the coffee stores that is stored in the Store Context
+  const {
+    state: {
+      coffeeStores
+    },
+  } = useContext(StoreContext)
+
+  useEffect(()=>{
+    if(isEmpty(initialProps.CoffeeStoredetails)){
+      if(coffeeStores.length > 0){
+        const findCoffeeStoreByID = coffeeStores.find((coffeeStore) => {
+          // Returns the first id it gets from thhe dynnamic id in the URL
+          return coffeeStore.id.toString() === id;
+        })
+        setNewCoffeeStore(findCoffeeStoreByID)
+      }
+    }
+  }, [id])
+
+  const { name, address, neighborhood, imageURL } = newCoffeeStore;
+
   const handlUpvoteBtn = () => {
     console.log("Button to handle upvoting");
   };
@@ -75,7 +105,7 @@ const CoffeeStore = ({ CoffeeStoredetails }) => {
           <div className={styles.storeNameWrapper}>
             <h1 className={styles.storeName}>{name}</h1>
           </div>
-          <dic className={styles.storeImgWrapper}>
+          <div className={styles.storeImgWrapper}>
             <Image
               src={imageURL || "https://images.unsplash.com/photo-1504627298434-2119d6928e93?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"}
               width={600}
@@ -83,7 +113,7 @@ const CoffeeStore = ({ CoffeeStoredetails }) => {
               alt={name}
               className={styles.storeImage}
             />
-          </dic>
+          </div>
         </div>
         <div className={cls("glass", styles.col2)}>
           <div className={styles.iconWrapper}>

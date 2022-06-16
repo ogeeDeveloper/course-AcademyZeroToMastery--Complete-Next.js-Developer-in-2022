@@ -6,7 +6,9 @@ import {ACTION_TYPES, StoreContext} from "../src/pages/_app"
 const useTrackLocation = ()=>{
     // state to track if their is a error and show the error message
     const [locationErrorMsg,setLocationErrorMsg] = useState("")
+
     // const [latLong, setLatLong] = useState("")
+
     // State to show if a user is finding location or not
     const [isFindingLocation, setIsFindingLocation] = useState(false)
 
@@ -20,6 +22,7 @@ const useTrackLocation = ()=>{
         const longitude = coord.longitude
 
         //setLatLong(`${latitude},${longitude}`)
+        
         // call dispatch from context
         dispatch({
             // Set values from the LatLong type
