@@ -1,5 +1,5 @@
 import { useState, useContext } from "react"
-import {ACTION_TYPES, StoreContext} from "../src/pages/_app"
+import {ACTION_TYPES, StoreContext} from "../src/store/store-context"
 
 
 // function to retrieve latlong of user
