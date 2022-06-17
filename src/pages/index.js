@@ -38,16 +38,23 @@ export default function Home(props) {
       // fetch coffee store if their is a latlong provided
       if(latLong){
         try{
-          const FetchCoffeeStoresByLatLong = await FetchCoffeeStore(latLong,30)
-          console.log({FetchCoffeeStoresByLatLong})
+          // Calling the serverless function to fetch the coffee stores
+          const response = await fetch(`./api/getCoffeeStoreByLocation?latLong=${latLong}&limit=30`)
+          // Return the response as JSON from the promise
+          const coffeeStores = await response.json()
+          console.log({coffeeStores})
           // set coffee stores
           // setCoffeeStoresByUser(FetchCoffeeStoresByLatLong)
           dispatch({
             type: ACTION_TYPES.SET_COFFEE_STORES,
             payload: {
-              coffeeStores: FetchCoffeeStoresByLatLong,
+              coffeeStores: coffeeStores,
             }
           })
+
+          // Clear errors after success of coffee stores
+          setCoffeeStoreError("")
+          
         }catch(error){
           // set error
           console.log({error})

@@ -1,12 +1,12 @@
-import {FetchCoffeeStore} from "../../lib/coffee-store"
+import { FetchCoffeeStore } from "../../lib/coffee-stores"
 
 // API to retrieve the coffee stores
-export default getCoffeeStoreByLocation = async(req, res)=>{
+const handler = async(req, res)=>{
     // Configure latlongf and limit
     try {
         const {latLong, limit} = req.query // get latlong and query from query in URL
 
-        const response = await FetchCoffeeStore(latLong,30) 
+        const response = await FetchCoffeeStore(latLong, limit) 
         res.status(200)
         res.json(response)
     } catch (error) {
@@ -17,3 +17,5 @@ export default getCoffeeStoreByLocation = async(req, res)=>{
     
     // return
 }
+
+export default handler
