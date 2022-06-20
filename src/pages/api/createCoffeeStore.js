@@ -16,18 +16,30 @@ console.log({table})
 const createCoffeeStore = async(req, res)=>{
     // Check to see if method is POST
     if(req.method === "POST"){
-        // Find a Record
-        const findCoffeeStoreRecords =  await table.select({
-            filterByFormula: `id="0"`,
-        }).firstPage()
+        try{
+            // Find a Record
+            const findCoffeeStoreRecords =  await table.select({
+                filterByFormula: `id="0"`,
+            }).firstPage()
 
-        console.log({findCoffeeStoreRecords})
+            console.log({findCoffeeStoreRecords})
 
-        if(findCoffeeStoreRecords.length !==0){
-            res.json(findCoffeeStoreRecords)
-        }else{
-            //Create a record
-            res.json({message: "Create a record"})
+            if(findCoffeeStoreRecords.length !==0){
+                // Transform data that is been retrieved from the API
+                    const records = findCoffeeStoreRecords.map(data=>{
+                        // Spread the fields inside the object soi we can get back all data in the fields object
+                        return{
+                            ...data.fields,
+                        }
+                    })
+                res.json(records)
+            }else{
+                //Create a record
+                res.json({message: "Create a record"})
+            }
+        }catch(error){
+            console.log("Their was an error while fetching stores", error)
+            res.status(500).json({message: "Something went wrong, please try again later"})
         }
     }
     // return res.json({message: "Hi there api configured succesfully"})
