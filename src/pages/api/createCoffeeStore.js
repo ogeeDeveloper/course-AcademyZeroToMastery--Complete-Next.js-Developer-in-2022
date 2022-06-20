@@ -16,10 +16,12 @@ console.log({table})
 const createCoffeeStore = async(req, res)=>{
     // Check to see if method is POST
     if(req.method === "POST"){
+        // Get the json to be added by access the body of the request
+        const {ID, name, address, neighborhood, voting, imageURL} = req.body
         try{
             // Find a Record
             const findCoffeeStoreRecords =  await table.select({
-                filterByFormula: `id="1"`,
+                filterByFormula: `ID=${ID}`,
             }).firstPage()
 
             console.log({findCoffeeStoreRecords})
@@ -38,12 +40,13 @@ const createCoffeeStore = async(req, res)=>{
                 const createRecords = await table.create([
                     {
                         fields:{
-                            ID: "1",
-                            name: "Uptown coffee funk",
-                            address: "1123 Tester",
-                            neighborhood: "top coupe",
-                            voting: 100,
-                            imageURL: "https://img.com"
+                            // Since key and value is the same I can just use the vatiable itself that was destructred from the request of the body rather than "name: nameOfCoffeeStore"
+                            ID,
+                            name,
+                            address,
+                            neighborhood,
+                            voting,
+                            imageURL,
                         }
                     }
                 ])
@@ -55,7 +58,7 @@ const createCoffeeStore = async(req, res)=>{
                     }
                 })
 
-                res.json({message: "Create a record", record})
+                res.json({message: "Created a record", record})
 
             }
         }catch(error){
