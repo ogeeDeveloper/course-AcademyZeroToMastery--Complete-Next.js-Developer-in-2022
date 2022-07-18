@@ -70,6 +70,27 @@ const CoffeeStore = (initialProps) => {
     },
   } = useContext(StoreContext)
 
+  // Fetch coffee store and store the data
+  const handleCreateCoffeeStore = async(coffeeStore)=>{
+    try{
+      // Pass in the data
+      const {ID,name,address,neighborhood,voting,imageURL} = coffeeStore 
+
+      // Fetch the API
+      const response = await fetch("../api/createCoffeeStore",{
+        method: 'POST',
+        headers: {
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify({ID: `${id}`,name,address: address || "",neighborhood: neighborhood || "",voting:0, imageURL})
+      })
+      const dbCoffeeStore = response.json()
+      console.log({dbCoffeeStore})
+    }catch(err){
+      console.error("Error while creating coffee store", err)
+    }
+  }
+
   useEffect(()=>{
     if(isEmpty(initialProps.CoffeeStoredetails)){
       if(coffeeStores.length > 0){
@@ -77,7 +98,11 @@ const CoffeeStore = (initialProps) => {
           // Returns the first id it gets from thhe dynnamic id in the URL
           return coffeeStore.id.toString() === id;
         })
-        setNewCoffeeStore(findCoffeeStoreByID)
+
+        if(findCoffeeStoreByID){
+          setNewCoffeeStore(findCoffeeStoreByID)
+          handleCreateCoffeeStore(findCoffeeStoreByID)
+        }
       }
     }
   }, [id])
