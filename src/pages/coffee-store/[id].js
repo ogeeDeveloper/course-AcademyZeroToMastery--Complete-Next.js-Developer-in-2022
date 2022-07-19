@@ -104,8 +104,11 @@ const CoffeeStore = (initialProps) => {
           handleCreateCoffeeStore(findCoffeeStoreByID)
         }
       }
+    }else{
+      // Get te data from SSG
+      handleCreateCoffeeStore(initialProps.CoffeeStoredetails)
     }
-  }, [id])
+  }, [id, initialProps, initialProps.CoffeeStoredetails])
 
   const { name, address, neighborhood, imageURL } = newCoffeeStore;
 
