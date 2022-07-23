@@ -1,4 +1,4 @@
-import {table, getRecords } from "../../lib/airtable"
+import {table, getRecords, findRecordByFilter } from "../../lib/airtable"
 
 
 const createCoffeeStore = async(req, res)=>{
@@ -7,13 +7,8 @@ const createCoffeeStore = async(req, res)=>{
         const {ID, name, address, neighborhood, voting, imageURL} = req.body
         try{
             if(ID){
-                // Find a Record
-                const findCoffeeStoreRecords =  await table.select({
-                    filterByFormula: `id="${ID}"`,
-                }).firstPage()
-
-                if(findCoffeeStoreRecords.length !==0){
-                    const records = getRecords(findCoffeeStoreRecords)
+                const records = await findRecordByFilter(ID)
+                if(records.length !==0){
                     res.json(records)
                 }else{
                     if(name){
@@ -33,7 +28,6 @@ const createCoffeeStore = async(req, res)=>{
                         ])
                         // Transform data that is been retrieved from the API
                         const records = getRecords(createRecords)
-                        res.json(201)
                         res.json({message: "Created a record successfully", records})
                     }else{
                         res.json(400)
