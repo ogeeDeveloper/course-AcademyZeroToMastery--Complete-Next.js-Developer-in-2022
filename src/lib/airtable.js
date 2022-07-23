@@ -28,8 +28,19 @@ const getRecords = records =>{
     )
 }
 
+const findRecordByFilter = async(id)=>{
+    // Find a Record
+    const findCoffeeStoreRecords =  await table.select({
+        filterByFormula: `id="${id}"`,
+    }).firstPage()
+
+    // Retrieve store ID exists
+    return getRecords(findCoffeeStoreRecords)
+}
+
 
 export {
     table,
-    getRecords
+    getRecords,
+    findRecordByFilter
 }
