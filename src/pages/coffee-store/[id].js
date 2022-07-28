@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 // Hook to read route from the browser URL
 import { useRouter } from "next/router";
+import useSWR from "swr"
 
 import Head from "next/head";
 import Link from "next/link";
@@ -10,6 +11,8 @@ import cls from "classnames";
 import { FetchCoffeeStore } from "../../lib/coffee-stores";
 import { StoreContext } from "../../store/store-context";
 import { isEmpty } from "../../utils";
+
+export const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
@@ -77,7 +80,7 @@ const CoffeeStore = (initialProps) => {
       const {ID,name,address,neighborhood,voting,imageURL} = coffeeStore 
 
       // Fetch the API
-      const response = await fetch("../api/createCoffeeStore",{
+      const response = await fetch("/api/createCoffeeStore",{
         method: 'POST',
         headers: {
           'Content-Type':'application/json'
@@ -112,6 +115,20 @@ const CoffeeStore = (initialProps) => {
 
   const { name, address, neighborhood, imageURL } = newCoffeeStore;
 
+  // Takes in theID from the browser URL
+  // We will get the data and set the data
+  const { data, error } = useSWR(`/api/getCoffeeStoreById/?id=${id}`, fetcher)
+
+  // Get the count for the voting for the specifioc coffee store by Id
+  useEffect(()=>{
+    // Set the data in the coffeeStore state
+    if(data && data.length > 0){
+      console.log('Data from SWR', data)
+      setNewCoffeeStore(data[0])
+      setVotingCount(data[0].voting)
+    }
+  },[data])
+
   // Create state to store the values for votes
   const [votingCount, setVotingCount] = useState(0)
 
@@ -120,6 +137,11 @@ const CoffeeStore = (initialProps) => {
     let count = votingCount + 1
     setVotingCount(count)
   };
+
+  // Set error if there was an error retrieving the coffee store
+  if(error){
+    return <div>Error retrieving that coffee store</div>
+  }
 
   return (
     <div className={styles.layout}>
