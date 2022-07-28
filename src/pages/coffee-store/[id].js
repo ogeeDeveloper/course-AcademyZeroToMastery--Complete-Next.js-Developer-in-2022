@@ -132,10 +132,32 @@ const CoffeeStore = (initialProps) => {
   // Create state to store the values for votes
   const [votingCount, setVotingCount] = useState(0)
 
-  const handlUpvoteBtn = () => {
+  const handlUpvoteBtn = async() => {
     console.log("Button to handle upvoting");
-    let count = votingCount + 1
-    setVotingCount(count)
+
+    try{
+      // Fetch the API
+      const response = await fetch("/api/upvoteCoffeeStoreById",{
+        method: 'PUT',
+        headers: {
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify({
+          id,
+        })
+      })
+      const dbCoffeeStore = response.json()
+      // console.log({dbCoffeeStore})
+
+      // check to see if the dbCoffeeStore was not empty
+      if(dbCoffeeStore && dbCoffeeStore.length > 0){
+        // Set the voting count on client side
+        let count = votingCount + 1
+        setVotingCount(count)
+      }
+    }catch(err){
+      console.error("Error upvoting specofoc coffeestore", err)
+    }
   };
 
   // Set error if there was an error retrieving the coffee store

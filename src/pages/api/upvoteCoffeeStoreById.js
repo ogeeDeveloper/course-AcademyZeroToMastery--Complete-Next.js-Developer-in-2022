@@ -15,7 +15,7 @@ const upvoteCoffeeStoreById=async(req, res)=>{
                     const record = records[0]
                     // Parse ther string to a integer and increment by 1
                     const calculateVoting = parseInt(record.voting) + parseInt(1)
-                    console.log({calculateVoting}, record.ID)
+                    // console.log({calculateVoting}, record.ID)
 
                     // Update record
                     const updateVotingRecord = table.update([
