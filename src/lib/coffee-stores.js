@@ -6,8 +6,8 @@ const unsplashApi = createApi({
   //...other fetch options
 });
 
-const getUrlForCoffeeStores = (latlong, query, limit)=>{
-  return `https://api.foursquare.com/v3/places/nearby?ll=${latlong}&query=${query}&limit=${limit}`
+const getUrlForCoffeeStores = (latlong, query, limit, radius)=>{
+  return `https://api.foursquare.com/v3/places/nearby?ll=${latlong}&radius=${radius}&query=${query}&limit=${limit}`
 }
 
 // function yto get a list of photos URL from Unsplash API
@@ -26,10 +26,11 @@ const getListOfCoffeeStoreImages = async ()=> {
 
 export const FetchCoffeeStore = async (
   latlong = "43.65267326999575,-79.39545615725015",
-  limit = 8
+  limit = 8,
+  radius =10000
 )=>{
   const photos = await getListOfCoffeeStoreImages()
-    const response = await fetch(getUrlForCoffeeStores(latlong, "coffee stores", limit), {
+    const response = await fetch(getUrlForCoffeeStores(latlong, "coffee stores", limit, radius), {
     "headers":{
       'Authorization': process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY
     },

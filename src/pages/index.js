@@ -20,7 +20,7 @@ export async function getStaticProps(context){
 
 
 export default function Home(props) {
-  console.log({props})
+  // console.log({props})
   const {handleTracLocation, locationErrorMsg,isFindingLocation} = useTrackLocation()
 
   // Store the fetch coffee store by latlong in a state
@@ -126,12 +126,12 @@ export default function Home(props) {
         {/* Only renders when they are data in the database */}
         {props.coffeeStores && (
           <div>
-            <h2 className={styles.heading2}>Chicago Coffee Stores</h2>
+            <h2 className={styles.heading2}>Toranto Coffee Stores</h2>
             <div className={styles.cardLayout}>
               {props.coffeeStores.map((coffeeData) => {
                 return (
                   <Card
-                    key={coffeeData.fsq_id}
+                    key={coffeeData.id}
                     className={styles.card}
                     title={coffeeData.name}
                     imageUrl={
