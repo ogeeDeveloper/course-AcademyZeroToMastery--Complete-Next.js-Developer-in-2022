@@ -30,7 +30,7 @@ export const FetchCoffeeStore = async (
   radius =10000
 )=>{
   const photos = await getListOfCoffeeStoreImages()
-    const response = await fetch(getUrlForCoffeeStores(latlong, "coffee stores", limit, radius), {
+    const response = await fetch(getUrlForCoffeeStores(latlong, radius, "coffee stores", limit), {
     "headers":{
       'Authorization': process.env.NEXT_PUBLIC_FOURSQUARE_API_KEY
     },
