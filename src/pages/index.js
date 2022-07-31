@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import Banner from "../components/banner";
-import Card from "../components/UI/card";
+import Card from "../components/UI/Card";
 // import CoffeeStoreData from "../utils/coffeeData.json";
 import styles from "../styles/Home.module.css";
 import {FetchCoffeeStore} from '../lib/coffee-stores'
