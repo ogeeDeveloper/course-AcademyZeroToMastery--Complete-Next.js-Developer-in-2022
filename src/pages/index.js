@@ -42,7 +42,7 @@ export default function Home(props) {
           const response = await fetch(`./api/getCoffeeStoreByLocation?latLong=${latLong}&limit=30`)
           // Return the response as JSON from the promise
           const coffeeStores = await response.json()
-          console.log({coffeeStores})
+          // console.log({coffeeStores})
           // set coffee stores
           // setCoffeeStoresByUser(FetchCoffeeStoresByLatLong)
           dispatch({
@@ -63,13 +63,13 @@ export default function Home(props) {
       }
     }
     setCoffeeStoreByLocation() 
-  }, [latLong])
+  }, [latLong, dispatch])
   
 
   const HadleOnBanerButtonHandler = () => {
     handleTracLocation()
 
-    console.log({latLong, locationErrorMsg})
+    // console.log({latLong, locationErrorMsg})
   };
 
   return (
@@ -108,7 +108,7 @@ export default function Home(props) {
               {coffeeStores?.map((coffeeData) => {
                 return (
                   <Card
-                    key={coffeeData.fsq_id}
+                    key={coffeeData.id}
                     className={styles.card}
                     title={coffeeData.name}
                     imageUrl={

@@ -5,14 +5,15 @@ import useSWR from "swr"
 
 import Head from "next/head";
 import Link from "next/link";
+
 import styles from "../../styles/coffee-store.module.css";
+
 import Image from "next/image";
 import cls from "classnames";
+
 import { FetchCoffeeStore } from "../../lib/coffee-stores";
 import { StoreContext } from "../../store/store-context";
-import { isEmpty } from "../../utils";
-
-export const fetcher = (url) => fetch(url).then((res) => res.json());
+import { isEmpty, fetcher } from "../../utils";
 
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
@@ -51,20 +52,17 @@ export async function getStaticPaths() {
 
 // Its a great convention to call anythings that is get called from getStaticProps as "initialProps"
 const CoffeeStore = (initialProps) => {
+  // const [newCoffeeStore, setNewCoffeeStore] = useState(initialProps.CoffeeStoredetails)
+  // console.log("Coffee store from initial props:", initialProps.CoffeeStoredetails);
   const router = useRouter(); // This is a object that has a lot of values such as the 'id' from query
   // const { id } = router.query;
 
-
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
-
-  console.log("Coffee store from initial props:", initialProps.CoffeeStoredetails);
-
-  const [newCoffeeStore, setNewCoffeeStore] = useState(initialProps.CoffeeStoredetails)
-
   // Get the ID from the URL
   const id = router.query.id
+
+  const [newCoffeeStore, setNewCoffeeStore] = useState(
+    initialProps.CoffeeStoredetails || {}
+  );
 
   // Fetch the coffee stores that is stored in the Store Context
   const {
@@ -85,10 +83,18 @@ const CoffeeStore = (initialProps) => {
         headers: {
           'Content-Type':'application/json'
         },
-        body: JSON.stringify({ID: `${id}`,name,address: address || "",neighborhood: neighborhood || "",voting:0, imageURL})
+        body: JSON.stringify({
+          ID: `${id}`,
+          name,
+          address: address || "",
+          neighborhood: neighborhood || "",
+          voting:0, 
+          imageURL
+        })
       })
+
       const dbCoffeeStore = response.json()
-      console.log({dbCoffeeStore})
+      //console.log({dbCoffeeStore})
     }catch(err){
       console.error("Error while creating coffee store", err)
     }
@@ -111,29 +117,34 @@ const CoffeeStore = (initialProps) => {
       // Get te data from SSG
       handleCreateCoffeeStore(initialProps.CoffeeStoredetails)
     }
-  }, [id, initialProps, initialProps.CoffeeStoredetails])
+  }, [id, initialProps.CoffeeStoredetails,coffeeStores])
 
   const { name, address, neighborhood, imageURL } = newCoffeeStore;
 
+  
+
+  const [votingCount, setVotingCount] = useState(0);
   // Takes in theID from the browser URL
   // We will get the data and set the data
   const { data, error } = useSWR(`/api/getCoffeeStoreById/?id=${id}`, fetcher)
+
 
   // Get the count for the voting for the specifioc coffee store by Id
   useEffect(()=>{
     // Set the data in the coffeeStore state
     if(data && data.length > 0){
-      console.log('Data from SWR', data)
+      //console.log('Data from SWR', data)
       setNewCoffeeStore(data[0])
       setVotingCount(data[0].voting)
     }
   },[data])
 
-  // Create state to store the values for votes
-  const [votingCount, setVotingCount] = useState(0)
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
 
   const handlUpvoteBtn = async() => {
-    console.log("Button to handle upvoting");
+    // console.log("Button to handle upvoting");
 
     try{
       // Fetch the API
@@ -146,7 +157,8 @@ const CoffeeStore = (initialProps) => {
           id,
         })
       })
-      const dbCoffeeStore = response.json()
+
+      const dbCoffeeStore = await response.json()
       // console.log({dbCoffeeStore})
 
       // check to see if the dbCoffeeStore was not empty
@@ -156,7 +168,7 @@ const CoffeeStore = (initialProps) => {
         setVotingCount(count)
       }
     }catch(err){
-      console.error("Error upvoting specofoc coffeestore", err)
+      console.error("Error upvoting specific coffeestore", err)
     }
   };
 
@@ -169,6 +181,7 @@ const CoffeeStore = (initialProps) => {
     <div className={styles.layout}>
       <Head>
         <title>{name}</title>
+        <meta name="description" content={`${name} coffee store`} />
       </Head>
 
 
